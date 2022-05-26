@@ -1,13 +1,20 @@
 let accounts = require("../../accounts");
+const Account = require("../../database/models/Account");
+
+exports.fetchAccounts = async (req, res) => {
+  try {
+    const accounts = await Account.find();
+    res.status(200).json(accounts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
 
 exports.createAccount = (req, res) => {
   const id = accounts.length + 1;
   req.body.id = id;
   accounts.push(req.body);
   res.status(201).json(req.body);
-};
-exports.fetchAccounts = (req, res) => {
-  res.json(accounts);
 };
 
 exports.updateAccount = (req, res) => {

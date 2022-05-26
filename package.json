@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/aadelalqaabi/Task-Express-M1-Intro-Crud-Banks#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "mongoose": "^6.3.4"
   }
 }
