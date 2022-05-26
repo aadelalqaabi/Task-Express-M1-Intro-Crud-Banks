@@ -10,36 +10,39 @@ exports.fetchAccounts = async (req, res) => {
   }
 };
 
-exports.createAccount = (req, res) => {
-  const id = accounts.length + 1;
-  req.body.id = id;
-  accounts.push(req.body);
-  res.status(201).json(req.body);
-};
-
-exports.updateAccount = (req, res) => {
-  const account = accounts.find(
-    (_account) => _account.id === +req.params.accountId
-  );
-  if (account) {
-    for (const key in req.body) {
-      account[key] = req.body[key];
-    }
-    res.status(200).json(account);
-  } else {
-    res.status(404).json({ message: "Account does not exist" });
+exports.createAccount = async (req, res) => {
+  try {
+    const newAccount = await Account.create(req.body);
+    res.status(201).json(newAccount);
+  } catch (error) {
+    res.status(500).json(error);
   }
 };
 
-exports.deleteAccounts = (req, res) => {
-  const account = accounts.find(
-    (_account) => _account.id === +req.params.accountId
-  );
-  if (account) {
-    accounts = accounts.filter(
-      (_account) => _account.id !== +req.params.accountId
-    );
+exports.updateAccount = async (req, res) => {
+  try {
+    const foundAccount = await Account.findById(req.params.accountId);
+    if (foundAccount) {
+      await Account.findByIdAndUpdate(foundAccount._id, req.body);
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: "Account does not exist" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Account does not exist" });
+  }
+};
 
-    res.status(204).end();
+exports.deleteAccounts = async (req, res) => {
+  try {
+    const foundAccount = await Account.findById(req.params.accountId);
+    if (foundAccount) {
+      foundAccount.remove();
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: "Account does not exist" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Account does not exist" });
   }
 };
